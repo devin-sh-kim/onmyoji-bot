@@ -1,6 +1,10 @@
 package net.ujacha.onmyojibot.kakao;
 
-public class KeyboardResponse {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;;
+
+@JsonInclude(Include.NON_NULL)
+public class Keyboard {
 
 	private String type;
 
