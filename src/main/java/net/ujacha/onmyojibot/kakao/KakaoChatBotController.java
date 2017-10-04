@@ -142,10 +142,10 @@ public class KakaoChatBotController {
 
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("찾은 식신:").append(shikigami.getName()).append("\n");
+		sb.append("찾은 식신: [").append(shikigami.getName()).append("]\n\n");
 		if (recommend != null) {
 			sb.append("추천 위치:\n");
-			sb.append(buildLocation(recommend));
+			sb.append(buildLocation(recommend)).append("\n");
 		}
 
 		sb.append("출연 위치:\n");
@@ -158,6 +158,8 @@ public class KakaoChatBotController {
 	private String buildLocation(Location l) {
 		StringBuffer sb = new StringBuffer();
 
+		sb.append("- ");
+		
 		sb.append(l.getType()).append(" ");
 		if (StringUtils.equals("탐험", l.getType())) {
 			sb.append("챕터-").append(l.getValue());
