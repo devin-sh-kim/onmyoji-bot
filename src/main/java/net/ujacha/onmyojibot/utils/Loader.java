@@ -16,18 +16,32 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import net.ujacha.onmyojibot.entity.Location;
 import net.ujacha.onmyojibot.entity.Shikigami;
+import net.ujacha.onmyojibot.repository.ShikigamiRepository;
 
-@Component
 public class Loader {
 
 	private static final Logger log = LoggerFactory.getLogger(Loader.class);
 
 	private static final String FILE_NAME = "onmyoji.xlsx";
+	
+	@Autowired
+	private ShikigamiRepository shikigamiRepository; 
 
+	
+	public void init() {
+		
+		File file = new File(getClass().getClassLoader().getResource(FILE_NAME).getFile());
+		
+		List<Shikigami> list =  this.loadShikigami(file);
+		
+		list.forEach(s -> shikigamiRepository.save(s));
+
+	}
+	
 	
 	public List<Shikigami> loadShikigami(File file) {
 		List<Shikigami> list = new ArrayList<>();
