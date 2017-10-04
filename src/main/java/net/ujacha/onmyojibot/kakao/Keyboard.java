@@ -7,7 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;;
 public class Keyboard {
 
 	private String type;
-
+	private String[] buttons;
+	
 	public String getType() {
 		return type;
 	}
@@ -15,6 +16,15 @@ public class Keyboard {
 	public void setType(String type) {
 		this.type = type;
 	}
+
+	public String[] getButtons() {
+		return buttons;
+	}
+
+	public void setButtons(String[] buttons) {
+		this.buttons = buttons;
+	}
+
 	
 	
 	
