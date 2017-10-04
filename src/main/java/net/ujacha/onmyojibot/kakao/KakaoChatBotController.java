@@ -1,7 +1,6 @@
 package net.ujacha.onmyojibot.kakao;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -124,42 +123,52 @@ public class KakaoChatBotController {
 	private String buildMessageText(Shikigami shikigami) {
 
 		Location[] locations = shikigami.getLocations();
-		
+
 		int max = 0;
-		Location recommend = null; 
-		for(Location l : locations) {
-			
-			if(StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue()) && Integer.parseInt(l.getValue()) > 18 ){
+		Location recommend = null;
+		for (Location l : locations) {
+
+			if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
+					&& Integer.parseInt(l.getValue()) > 18) {
 				continue;
 			}
-			
-			if(l.getCount() > max) {
+
+			if (l.getCount() > max) {
 				max = l.getCount();
 				recommend = l;
-			}				
-			
+			}
+
 		}
-		
-		
+
 		StringBuffer sb = new StringBuffer();
-		
+
 		sb.append("찾은 식신:").append(shikigami.getName()).append("\n");
-		if(recommend != null) {
-			sb.append("추천 위치:")
-			.append(recommend.getType()).append(" ")
-			.append(recommend.getValue()).append(StringUtils.equals("탐험", recommend.getType())?"츰":"")
-			.append("(").append(recommend.getCount()).append("마리)").append("\n");			
+		if (recommend != null) {
+			sb.append("추천 위치:\n");
+			sb.append(buildLocation(recommend));
 		}
-		
-		sb.append("출연 위치:");
-		for(Location l : locations) {
-			sb.append(l.getType()).append(" ")
-			.append(l.getValue()).append(StringUtils.equals("탐험", l.getType())?"츰":"")
-			.append("(").append(l.getCount()).append("마리)").append("\n");
+
+		sb.append("출연 위치:\n");
+		for (Location l : locations) {
+			sb.append(buildLocation(l));
 		}
-		
-		
-		
+		return sb.toString();
+	}
+
+	private String buildLocation(Location l) {
+		StringBuffer sb = new StringBuffer();
+
+		sb.append(l.getType()).append(" ");
+		if (StringUtils.equals("탐험", l.getType())) {
+			sb.append("챕터-").append(l.getValue());
+		} else if (StringUtils.equals("어혼던전", l.getType())) {
+			sb.append(l.getValue()).append("층");
+		} else if (StringUtils.equals("요기봉인", l.getType())) {
+			sb.append(l.getValue());
+		}
+
+		sb.append(" (").append(l.getCount()).append("마리)").append("\n");
+
 		return sb.toString();
 	}
 }
