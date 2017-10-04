@@ -34,5 +34,7 @@ dependencies {
 	testCompile('org.springframework.restdocs:spring-restdocs-mockmvc')
 	
 	compile('org.apache.poi:poi-ooxml:3.17')
+	compile('org.apache.commons:commons-lang3:3.6')
+	
 	
 }

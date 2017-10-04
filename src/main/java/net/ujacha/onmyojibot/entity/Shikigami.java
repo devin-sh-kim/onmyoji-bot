@@ -1,18 +1,30 @@
 package net.ujacha.onmyojibot.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @Entity
 public class Shikigami {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String name;
 	private String[] hints;
-	private String rarity;
+	private String rarity;	
 	private Location[] locations;
+	private String infoPageUrl;
+	private String imageUrl;
 
+	public Shikigami() {
+		// TODO Auto-generated constructor stub
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -53,4 +65,25 @@ public class Shikigami {
 		this.locations = locations;
 	}
 
+	public String getInfoPageUrl() {
+		return infoPageUrl;
+	}
+
+	public void setInfoPageUrl(String infoPageUrl) {
+		this.infoPageUrl = infoPageUrl;
+	}
+
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
+	}
+	
 }
