@@ -8,7 +8,7 @@ import net.ujacha.onmyojibot.utils.Loader;
 @Configuration
 public class AppConfig {
 
-	@Bean(initMethod="init")
+	@Bean(name="loader", initMethod="init")
 	public Loader loader() {
 		return new Loader();
 	} 

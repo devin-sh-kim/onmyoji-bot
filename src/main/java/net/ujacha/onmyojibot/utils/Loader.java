@@ -89,9 +89,8 @@ public class Loader {
 
 					Cell currentCell = cellIterator.next();
 
-					log.debug("{}:{}\t{}", currentCell.getRowIndex(), currentCell.getColumnIndex(), currentCell);
-
-					int rowIndex = currentCell.getRowIndex();
+//					log.debug("{}:{}\t{}", currentCell.getRowIndex(), currentCell.getColumnIndex(), currentCell);
+//					int rowIndex = currentCell.getRowIndex();
 					int cellIndex = currentCell.getColumnIndex();
 
 					switch (cellIndex) {
@@ -153,6 +152,8 @@ public class Loader {
 				list.add(shikigami);
 			}
 
+			workbook.close();
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
