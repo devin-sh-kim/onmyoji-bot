@@ -186,7 +186,7 @@ public class KakaoChatBotController {
 			sb.append("\n");
 		});
 		
-		return sb.toString();
+		return sb.toString().trim();
 	}
 
 	private String buildLocation(Location l) {
