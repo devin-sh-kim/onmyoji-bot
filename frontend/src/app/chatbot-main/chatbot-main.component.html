@@ -1,0 +1,26 @@
+<div class="ui -container">
+  <h1 class="ui dividing header">ONMYOJI-BOT</h1>
+  <div id="message-input" class="ui fluid action input">
+    <input type="text" [(ngModel)]=inputMessage>
+    <button class="ui button" (click)="onClickSend()">전송</button>
+  </div>
+
+  <div id="message-list" class="ui comments">
+    <div class="comment" *ngFor="let message of messages">
+      <a class="avatar">
+          <img src="/assets/img_s.jpg">
+      </a>
+      <div class="content">
+        <a class="author">음양사봇</a>
+        <div class="metadata">
+          <span class="date">{{message.date | date:'yMdjm'}}</span>
+        </div>
+        <div class="text">
+          <pre>{{message.text}}</pre>                    
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
