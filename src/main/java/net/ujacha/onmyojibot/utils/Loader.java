@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class Loader {
 
 				if (currentRow.getCell(1).getCellTypeEnum() != CellType.BLANK) {
 					if(shikigami != null) {
+						Collections.sort(locations);
 						shikigami.setLocations((Location[]) locations.toArray(new Location[locations.size()]));						
 						log.debug("{}", shikigami);
 						list.add(shikigami);
@@ -147,6 +149,7 @@ public class Loader {
 			
 			// 마지막줄 처리
 			if(shikigami != null) {
+				Collections.sort(locations);
 				shikigami.setLocations((Location[]) locations.toArray(new Location[locations.size()]));						
 				log.debug("{}", shikigami);
 				list.add(shikigami);
