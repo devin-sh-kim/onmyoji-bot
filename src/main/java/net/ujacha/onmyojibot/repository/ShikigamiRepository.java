@@ -37,7 +37,7 @@ public class ShikigamiRepository {
 	public List<Shikigami> findByName(String name) {
 		List<Shikigami> list = shikigamis.stream().filter(s -> {
 			boolean b = false;
-			if (StringUtils.equals(s.getName(), name)) {
+			if (StringUtils.startsWith(s.getName(), name)) {
 				b = true;
 			}
 			return b;
