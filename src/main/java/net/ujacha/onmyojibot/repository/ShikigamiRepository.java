@@ -46,4 +46,17 @@ public class ShikigamiRepository {
 		return list;
 	}
 
+	public List<Shikigami> findByInitialName(String initialName) {
+		List<Shikigami> list = shikigamis.stream().filter(s -> {
+			boolean b = false;
+			if (StringUtils.equals(s.getInitialName(), initialName)) {
+				b = true;
+			}
+			return b;
+		}).collect(Collectors.<Shikigami>toList());
+
+		return list;
+	}
+
+	
 }

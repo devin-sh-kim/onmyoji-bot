@@ -124,7 +124,12 @@ public class Loader {
 							shikigami.setRarity(currentCell.getStringCellValue());
 							break;
 						case 1:
-							shikigami.setName(currentCell.getStringCellValue());
+							
+							String name = currentCell.getStringCellValue();
+							
+							shikigami.setName(name);
+							shikigami.setInitialName(KoreanInitialUtils.initialString(name));
+							
 							break;
 						case 5: // 힌트
 							String hintString = currentCell.getStringCellValue();

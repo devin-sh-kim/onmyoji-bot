@@ -121,6 +121,8 @@ public class KakaoChatBotController {
 		List<Shikigami> find = shikigamiRepository.findByHint(text);
 
 		find.addAll(shikigamiRepository.findByName(text));
+		
+		find.addAll(shikigamiRepository.findByInitialName(text));
 
 		if (find != null && find.size() > 0) {
 			return find;
