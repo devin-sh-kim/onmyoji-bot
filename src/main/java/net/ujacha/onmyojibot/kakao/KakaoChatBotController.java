@@ -29,13 +29,13 @@ public class KakaoChatBotController {
 
 	private static final String WELCOME_MESSAGE = 
 			  	  "찾는 식신의 이름을 입력하세요.\n"
-				+ "  황도깨비\n"
+				+ ">  황도깨비\n"
 				+ "\n"
-				+ "초성으로 찾아볼까요?"
-				+ "  ㅎㄷㄲㅂ\n"
+				+ "초성으로 찾아볼까요?\n"
+				+ ">  ㅎㄷㄲㅂ\n"
 				+ "\n" 
 				+ "신비 요괴 힌트를 입력하세요.\n"
-				+ "  허수아비\n"				
+				+ ">  허수아비\n"				
 				+ "\n"
 				+ "즐거운 게임생활 되세요!";
 
