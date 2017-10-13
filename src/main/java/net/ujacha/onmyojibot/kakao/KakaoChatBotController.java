@@ -1,6 +1,5 @@
 package net.ujacha.onmyojibot.kakao;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +26,18 @@ public class KakaoChatBotController {
 	private ShikigamiRepository shikigamiRepository;
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
+
+	private static final String WELCOME_MESSAGE = 
+			  	  "찾는 식신의 이름을 입력하세요.\n"
+				+ ">  황도깨비\n"
+				+ "\n"
+				+ "초성으로 찾아볼까요?\n"
+				+ ">  ㅎㄷㄲㅂ\n"
+				+ "\n" 
+				+ "신비 요괴 힌트를 입력하세요.\n"
+				+ ">  허수아비\n"				
+				+ "\n"
+				+ "즐거운 게임생활 되세요!";
 
 	// Home Keyboard API
 	// curl -XGET 'https://:your_server_url/keyboard'
@@ -78,7 +89,7 @@ public class KakaoChatBotController {
 
 		Message message = new Message();
 		
-		message.setText("이름, 힌트를 입력하세요.\n예시)\n등롱귀\n허수아비");		
+		message.setText(WELCOME_MESSAGE);		
 				
 		return message;
 	}
@@ -121,6 +132,8 @@ public class KakaoChatBotController {
 		List<Shikigami> find = shikigamiRepository.findByHint(text);
 
 		find.addAll(shikigamiRepository.findByName(text));
+		
+		find.addAll(shikigamiRepository.findByInitialName(text));
 
 		if (find != null && find.size() > 0) {
 			return find;

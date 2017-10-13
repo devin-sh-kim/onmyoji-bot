@@ -37,7 +37,7 @@ public class ShikigamiRepository {
 	public List<Shikigami> findByName(String name) {
 		List<Shikigami> list = shikigamis.stream().filter(s -> {
 			boolean b = false;
-			if (StringUtils.equals(s.getName(), name)) {
+			if (StringUtils.startsWith(s.getName(), name)) {
 				b = true;
 			}
 			return b;
@@ -46,4 +46,17 @@ public class ShikigamiRepository {
 		return list;
 	}
 
+	public List<Shikigami> findByInitialName(String initialName) {
+		List<Shikigami> list = shikigamis.stream().filter(s -> {
+			boolean b = false;
+			if (StringUtils.equals(s.getInitialName(), initialName)) {
+				b = true;
+			}
+			return b;
+		}).collect(Collectors.<Shikigami>toList());
+
+		return list;
+	}
+
+	
 }

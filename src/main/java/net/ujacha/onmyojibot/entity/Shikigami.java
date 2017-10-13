@@ -15,6 +15,7 @@ public class Shikigami {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	private String name;
+	private String initialName; //이름 초성
 	private String[] hints;
 	private String rarity;	
 	private Location[] locations;
@@ -39,6 +40,14 @@ public class Shikigami {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getInitialName() {
+		return initialName;
+	}
+
+	public void setInitialName(String initialName) {
+		this.initialName = initialName;
 	}
 
 	public String[] getHints() {
