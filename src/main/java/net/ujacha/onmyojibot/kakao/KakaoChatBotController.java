@@ -59,6 +59,9 @@ public class KakaoChatBotController {
 	public KakaoMessageResponse message(@RequestBody KakaoRequestBody requestBody) {
 
 		KakaoMessageResponse messageResponse = new KakaoMessageResponse();
+		Keyboard keyboard = new Keyboard();
+		keyboard.setType("text");
+		messageResponse.setKeyboard(keyboard );
 		Message message = null;
 
 		log.debug("USERKEY:{} TYPE:{} CONTENT:{}", requestBody.getUserKey(), requestBody.getType(),
@@ -149,7 +152,7 @@ public class KakaoChatBotController {
 
 		StringBuffer sb = new StringBuffer();
 
-		sb.append("다음 식신을 찾았습니다.\n");
+		sb.append("다음 식신을 찾았습니다.\n\n");
 
 		shikigamis.forEach(s -> {
 			sb.append("- ").append(s.getName()).append("\n");
