@@ -27,17 +27,8 @@ public class KakaoChatBotController {
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
-	private static final String WELCOME_MESSAGE = 
-			  	  "찾는 식신의 이름을 입력하세요.\n"
-				+ ">  황도깨비\n"
-				+ "\n"
-				+ "초성으로 찾아볼까요?\n"
-				+ ">  ㅎㄷㄲㅂ\n"
-				+ "\n" 
-				+ "신비 요괴 힌트를 입력하세요.\n"
-				+ ">  허수아비\n"				
-				+ "\n"
-				+ "즐거운 게임생활 되세요!";
+	private static final String WELCOME_MESSAGE = "찾는 식신의 이름을 입력하세요.\n" + ">  황도깨비\n" + "\n" + "초성으로 찾아볼까요?\n"
+			+ ">  ㅎㄷㄲㅂ\n" + "\n" + "신비 요괴 힌트를 입력하세요.\n" + ">  허수아비\n" + "\n" + "즐거운 게임생활 되세요!";
 
 	// Home Keyboard API
 	// curl -XGET 'https://:your_server_url/keyboard'
@@ -76,8 +67,9 @@ public class KakaoChatBotController {
 		if (StringUtils.equals("식신찾기", requestBody.getContent())) {
 			message = buildFindInfo();
 		} else {
-			List<Shikigami> shikigamis = findShikigamis(requestBody.getContent());			
-			message = buildShikigamiMessage(shikigamis);
+			List<Shikigami> shikigamis = findShikigamis(requestBody.getContent());
+			message = buildMessage(shikigamis);
+			messageResponse.setKeyboard(buildKeyboard(shikigamis));
 		}
 
 		messageResponse.setMessage(message);
@@ -85,44 +77,86 @@ public class KakaoChatBotController {
 		return messageResponse;
 	}
 
+	private Keyboard buildKeyboard(List<Shikigami> shikigamis) {
+
+		Keyboard keyboard = new Keyboard();
+		keyboard.setType("text");
+		
+		if (shikigamis != null) {
+			if (shikigamis.size() > 1) {
+				keyboard.setType("buttons");
+
+				String[] buttons = shikigamis.stream().map(s -> s.getName()).toArray(String[]::new);
+
+				keyboard.setButtons(buttons);
+			}
+		}
+
+		return keyboard;
+	}
+
 	private Message buildFindInfo() {
 
 		Message message = new Message();
-		
-		message.setText(WELCOME_MESSAGE);		
-				
+
+		message.setText(WELCOME_MESSAGE);
+
 		return message;
 	}
 
-	private Message buildShikigamiMessage(List<Shikigami> shikigamis) {
+	private Message buildMessage(List<Shikigami> shikigamis) {
 		Message message = new Message();
-		
+
 		if (shikigamis != null) {
-			
-//			if (StringUtils.isNotEmpty(shikigami.getInfoPageUrl())) {
-//				MessageButton messageButton = new MessageButton();
-//				messageButton.setLabel("정보 보기");
-//				messageButton.setUrl(shikigami.getInfoPageUrl());
-//				message.setMessageButton(messageButton);
-//			}
 
-//			if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
-//				Photo photo = new Photo();
-//				photo.setUrl(shikigami.getImageUrl());
-//				photo.setHeight(720);
-//				photo.setWidth(630);
-//				message.setPhoto(photo);
-//			}
+			// if (StringUtils.isNotEmpty(shikigami.getInfoPageUrl())) {
+			// MessageButton messageButton = new MessageButton();
+			// messageButton.setLabel("정보 보기");
+			// messageButton.setUrl(shikigami.getInfoPageUrl());
+			// message.setMessageButton(messageButton);
+			// }
 
-			String text = buildMessageText(shikigamis);
-			message.setText(text);
+			// if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
+			// Photo photo = new Photo();
+			// photo.setUrl(shikigami.getImageUrl());
+			// photo.setHeight(720);
+			// photo.setWidth(630);
+			// message.setPhoto(photo);
+			// }
+
+			String text = "";
+			if (shikigamis.size() > 1) {
+
+				text = buildSelectShikigamiMassage(shikigamis);
+				message.setText(text);
+
+			} else {
+				text = buildShikigamiMessageText(shikigamis.get(0));
+				message.setText(text);
+
+			}
 
 		} else {
 			// 없음
 			message.setText("찾는 식신이 없습니다. 다시 한번 확인해주세요.");
 		}
-		
+
 		return message;
+	}
+
+	private String buildSelectShikigamiMassage(List<Shikigami> shikigamis) {
+
+		StringBuffer sb = new StringBuffer();
+
+		sb.append("다음 식신을 찾았습니다.\n\n");
+
+		shikigamis.forEach(s -> {
+			sb.append("- ").append(s.getName()).append("\n");
+		});
+
+		sb.append("\n찾고있는 식신을 선택하세요.");
+		
+		return sb.toString();
 	}
 
 	private List<Shikigami> findShikigamis(String content) {
@@ -132,7 +166,7 @@ public class KakaoChatBotController {
 		List<Shikigami> find = shikigamiRepository.findByHint(text);
 
 		find.addAll(shikigamiRepository.findByName(text));
-		
+
 		find.addAll(shikigamiRepository.findByInitialName(text));
 
 		if (find != null && find.size() > 0) {
@@ -162,43 +196,38 @@ public class KakaoChatBotController {
 
 	}
 
-	private String buildMessageText(List<Shikigami> shikigamis) {
+	private String buildShikigamiMessageText(Shikigami shikigami) {
 		StringBuffer sb = new StringBuffer();
 
-		shikigamis.forEach(shikigami -> {
+		Location[] locations = shikigami.getLocations();
 
-			Location[] locations = shikigami.getLocations();
+		int max = 0;
+		Location recommend = null;
+		for (Location l : locations) {
 
-			int max = 0;
-			Location recommend = null;
-			for (Location l : locations) {
-
-				if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
-						&& Integer.parseInt(l.getValue()) > 18) {
-					continue;
-				}
-
-				if (l.getCount() > max) {
-					max = l.getCount();
-					recommend = l;
-				}
-
+			if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
+					&& Integer.parseInt(l.getValue()) > 18) {
+				continue;
 			}
 
-			sb.append("찾은 식신: [").append(shikigami.getName()).append("]\n\n");
-			if (recommend != null) {
-				sb.append("추천 위치:\n");
-				sb.append(buildLocation(recommend)).append("\n");
+			if (l.getCount() > max) {
+				max = l.getCount();
+				recommend = l;
 			}
 
-			sb.append("출연 위치:\n");
-			for (Location l : locations) {
-				sb.append(buildLocation(l));
-			}
-			
-			sb.append("\n");
-		});
-		
+		}
+
+		sb.append("찾은 식신: [").append(shikigami.getName()).append("]\n\n");
+		if (recommend != null) {
+			sb.append("추천 위치:\n");
+			sb.append(buildLocation(recommend)).append("\n");
+		}
+
+		sb.append("출연 위치:\n");
+		for (Location l : locations) {
+			sb.append(buildLocation(l));
+		}
+
 		return sb.toString().trim();
 	}
 
