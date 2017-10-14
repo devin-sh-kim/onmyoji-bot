@@ -59,9 +59,6 @@ public class KakaoChatBotController {
 	public KakaoMessageResponse message(@RequestBody KakaoRequestBody requestBody) {
 
 		KakaoMessageResponse messageResponse = new KakaoMessageResponse();
-		Keyboard keyboard = new Keyboard();
-		keyboard.setType("text");
-		messageResponse.setKeyboard(keyboard );
 		Message message = null;
 
 		log.debug("USERKEY:{} TYPE:{} CONTENT:{}", requestBody.getUserKey(), requestBody.getType(),
@@ -83,7 +80,8 @@ public class KakaoChatBotController {
 	private Keyboard buildKeyboard(List<Shikigami> shikigamis) {
 
 		Keyboard keyboard = new Keyboard();
-
+		keyboard.setType("text");
+		
 		if (shikigamis != null) {
 			if (shikigamis.size() > 1) {
 				keyboard.setType("buttons");
@@ -91,8 +89,6 @@ public class KakaoChatBotController {
 				String[] buttons = shikigamis.stream().map(s -> s.getName()).toArray(String[]::new);
 
 				keyboard.setButtons(buttons);
-			} else {
-				keyboard.setType("text");
 			}
 		}
 
