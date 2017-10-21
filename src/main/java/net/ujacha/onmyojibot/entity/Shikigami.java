@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -94,5 +95,23 @@ public class Shikigami {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.JSON_STYLE);
 	}
+
+	@Override
+	public boolean equals(Object arg0) {
+	
+		boolean b = false;
+		
+		if(arg0 != null && arg0 instanceof Shikigami) {
+			Shikigami s = (Shikigami) arg0;
+			if(StringUtils.equals(this.name, s.name)) {
+				b = true;
+			}			
+		}
+		
+		return b;
+		
+	}
+
+	
 	
 }
