@@ -1,7 +1,13 @@
 package net.ujacha.onmyojibot.kakao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +33,19 @@ public class KakaoChatBotController {
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
-	private static final String WELCOME_MESSAGE = "찾는 식신의 이름을 입력하세요.\n" + ">  황도깨비\n" + "\n" + "초성으로 찾아볼까요?\n"
-			+ ">  ㅎㄷㄲㅂ\n" + "\n" + "신비 요괴 힌트를 입력하세요.\n" + ">  허수아비\n" + "\n" + "즐거운 게임생활 되세요!";
+	private static final String WELCOME_MESSAGE = 
+			"찾는 식신의 이름을 입력하세요.\n" + 
+			">  황도깨비\n" + 
+			"\n" + 
+			"초성으로 찾아볼까요?\n" + 
+			">  ㅎㄷㄲㅂ\n" + 
+			"\n" + 
+			"신비 요괴 힌트를 입력하세요.\n" + 
+			"(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" +
+			">  허수아비\n" + 
+			">  명계\n" +
+			"\n" + 
+			"즐거운 게임생활 되세요!";
 
 	// Home Keyboard API
 	// curl -XGET 'https://:your_server_url/keyboard'
@@ -169,6 +186,10 @@ public class KakaoChatBotController {
 
 		find.addAll(shikigamiRepository.findByInitialName(text));
 
+		HashSet<Shikigami> hashSet = new HashSet<>(find);
+		
+		find = new ArrayList<>(hashSet);		
+		
 		if (find != null && find.size() > 0) {
 			return find;
 		}
