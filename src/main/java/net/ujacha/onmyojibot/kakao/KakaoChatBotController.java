@@ -33,19 +33,9 @@ public class KakaoChatBotController {
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
-	private static final String WELCOME_MESSAGE = 
-			"찾는 식신의 이름을 입력하세요.\n" + 
-			">  황도깨비\n" + 
-			"\n" + 
-			"초성으로 찾아볼까요?\n" + 
-			">  ㅎㄷㄲㅂ\n" + 
-			"\n" + 
-			"신비 요괴 힌트를 입력하세요.\n" + 
-			"(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" +
-			">  허수아비\n" + 
-			">  명계\n" +
-			"\n" + 
-			"즐거운 게임생활 되세요!";
+	private static final String WELCOME_MESSAGE = "찾는 식신의 이름을 입력하세요.\n" + ">  황도깨비\n" + "\n" + "초성으로 찾아볼까요?\n"
+			+ ">  ㅎㄷㄲㅂ\n" + "\n" + "신비 요괴 힌트를 입력하세요.\n" + "(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" + ">  허수아비\n" + ">  명계\n"
+			+ "\n" + "즐거운 게임생활 되세요!";
 
 	// Home Keyboard API
 	// curl -XGET 'https://:your_server_url/keyboard'
@@ -98,7 +88,7 @@ public class KakaoChatBotController {
 
 		Keyboard keyboard = new Keyboard();
 		keyboard.setType("text");
-		
+
 		if (shikigamis != null) {
 			if (shikigamis.size() > 1) {
 				keyboard.setType("buttons");
@@ -133,23 +123,26 @@ public class KakaoChatBotController {
 			// message.setMessageButton(messageButton);
 			// }
 
-			// if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
-			// Photo photo = new Photo();
-			// photo.setUrl(shikigami.getImageUrl());
-			// photo.setHeight(720);
-			// photo.setWidth(630);
-			// message.setPhoto(photo);
-			// }
-
 			String text = "";
 			if (shikigamis.size() > 1) {
 
 				text = buildSelectShikigamiMassage(shikigamis);
 				message.setText(text);
 
-			} else {
-				text = buildShikigamiMessageText(shikigamis.get(0));
+			} else if (shikigamis.size() == 1) {
+
+				Shikigami shikigami = shikigamis.get(0);
+
+				text = buildShikigamiMessageText(shikigami);
 				message.setText(text);
+
+				if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
+					Photo photo = new Photo();
+					photo.setUrl(shikigami.getImageUrl());
+					photo.setHeight(400);
+					photo.setWidth(300);
+					message.setPhoto(photo);
+				}
 
 			}
 
@@ -172,7 +165,7 @@ public class KakaoChatBotController {
 		});
 
 		sb.append("\n찾고있는 식신을 선택하세요.");
-		
+
 		return sb.toString();
 	}
 
@@ -187,9 +180,9 @@ public class KakaoChatBotController {
 		find.addAll(shikigamiRepository.findByInitialName(text));
 
 		HashSet<Shikigami> hashSet = new HashSet<>(find);
-		
-		find = new ArrayList<>(hashSet);		
-		
+
+		find = new ArrayList<>(hashSet);
+
 		if (find != null && find.size() > 0) {
 			return find;
 		}
@@ -227,7 +220,7 @@ public class KakaoChatBotController {
 		for (Location l : locations) {
 
 			if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
-					&& Integer.parseInt(l.getValue()) > 18) {
+					&& Integer.parseInt(l.getValue()) > 99) {
 				continue;
 			}
 
