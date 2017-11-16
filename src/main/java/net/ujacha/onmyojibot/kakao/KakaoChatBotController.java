@@ -139,8 +139,8 @@ public class KakaoChatBotController {
 				if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
 					Photo photo = new Photo();
 					photo.setUrl(shikigami.getImageUrl());
-					photo.setHeight(400);
-					photo.setWidth(300);
+					photo.setHeight(150);
+					photo.setWidth(150);
 					message.setPhoto(photo);
 				}
 
