@@ -1,13 +1,9 @@
 package net.ujacha.onmyojibot.kakao;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -148,7 +144,7 @@ public class KakaoChatBotController {
 
 		} else {
 			// 없음
-			message.setText("찾는 식신이 없습니다. 다시 한번 확인해주세요.");
+			message.setText("찾는 식신이 없습니다.\n다시 한번 확인해주세요.\n힌트는 하나만 적어주세요.");
 		}
 
 		return message;
@@ -237,9 +233,20 @@ public class KakaoChatBotController {
 			sb.append(buildLocation(recommend)).append("\n");
 		}
 
-		sb.append("출연 위치:\n");
+		
+		boolean apply = false;
+		StringBuilder locationContent = new StringBuilder();
 		for (Location l : locations) {
-			sb.append(buildLocation(l));
+			if(l.getCount() > 0) {
+				apply = true;
+				locationContent.append(buildLocation(l));				
+			}
+		}
+		
+		if(apply) {
+			sb.append("출현 위치:\n").append(locationContent.toString());			
+		}else {
+			sb.append("어디서 많이 본거 같은데....");
 		}
 
 		return sb.toString().trim();
