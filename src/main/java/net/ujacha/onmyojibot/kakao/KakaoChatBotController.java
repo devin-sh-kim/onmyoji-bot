@@ -3,6 +3,7 @@ package net.ujacha.onmyojibot.kakao;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -61,22 +62,28 @@ public class KakaoChatBotController {
 	@PostMapping("message")
 	public KakaoMessageResponse message(@RequestBody KakaoRequestBody requestBody) {
 
+//		log.debug("USERKEY:{} TYPE:{} CONTENT:{}", requestBody.getUserKey(), requestBody.getType(), requestBody.getContent());
+		
 		KakaoMessageResponse messageResponse = new KakaoMessageResponse();
 		Message message = null;
-
-		log.debug("USERKEY:{} TYPE:{} CONTENT:{}", requestBody.getUserKey(), requestBody.getType(),
-				requestBody.getContent());
 
 		if (StringUtils.equals("식신찾기", requestBody.getContent())) {
 			message = buildFindInfo();
 		} else {
 			List<Shikigami> shikigamis = findShikigamis(requestBody.getContent());
+			
 			message = buildMessage(shikigamis);
 			messageResponse.setKeyboard(buildKeyboard(shikigamis));
+
+			
+			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), shikigamis != null ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
 		}
 
 		messageResponse.setMessage(message);
 
+
+		
+		
 		return messageResponse;
 	}
 
@@ -263,6 +270,8 @@ public class KakaoChatBotController {
 		} else if (StringUtils.equals("어혼던전", l.getType())) {
 			sb.append(l.getValue()).append("층");
 		} else if (StringUtils.equals("요기봉인", l.getType())) {
+			sb.append(l.getValue());
+		} else if (StringUtils.equals("비밀던전", l.getType())) {
 			sb.append(l.getValue());
 		}
 

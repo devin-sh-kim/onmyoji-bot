@@ -2,8 +2,6 @@ package net.ujacha.onmyojibot.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -71,7 +69,8 @@ public class Loader {
 
 				Iterator<Cell> cellIterator = currentRow.iterator();
 
-				if (currentRow.getCell(1).getCellTypeEnum() != CellType.BLANK) {
+				
+				if (currentRow.getCell(1) != null && currentRow.getCell(1).getCellTypeEnum() != CellType.BLANK) {
 					if(shikigami != null) {
 						Collections.sort(locations);
 						shikigami.setLocations((Location[]) locations.toArray(new Location[locations.size()]));						
@@ -162,9 +161,8 @@ public class Loader {
 
 			workbook.close();
 			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
+			log.error("{}", e.getMessage(), e);
 			e.printStackTrace();
 		}
 		
