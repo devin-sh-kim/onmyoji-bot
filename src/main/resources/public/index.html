@@ -3,19 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>음양사봇</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.css"
+          integrity="sha256-lcqhJKENorK80v+ug14UGH5PFBhk9wMZ4tNQTq/IpFo=" crossorigin="anonymous"/>
+
 </head>
 <body>
-<h1>음양사봇</h1>
-<div id="query">
-    <input type="text" id="input-query">
-    <button id="btn-query" type="button">검색</button>
-    <div id="buttons"></div>
+<div class="ui container" style="padding-top: 15px;">
+    <div id="query" class="ui yellow raised segment">
+        <h3 class="ui header">음양사봇</h3>
+        <div class="ui fluid action input">
+            <input type="text" id="input-query" placeholder="식신 또는 힌트를 입력하세요">
+            <button class="ui orange button" id="btn-query" type="button">검색</button>
+        </div>
+    </div>
+    <div id="result" style=""></div>
+
 </div>
-<div id="result"></div>
 <script
         src="https://code.jquery.com/jquery-3.2.1.js"
         integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
         crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"
+        integrity="sha256-IDf1DTXCXREKhmsRkKy9Xa4J1A99tyDSCC+8B042LJo=" crossorigin="anonymous"></script>
 <script src="app.js"></script>
 </body>
 </html>

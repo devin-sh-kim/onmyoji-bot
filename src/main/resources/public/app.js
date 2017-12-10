@@ -1,4 +1,13 @@
 $(function(){
+
+    // $('.ui.sticky').sticky();
+
+    $("#input-query").on("keyup", function(event){
+        if(event.keyCode == 13){
+            $("#btn-query").trigger("click");
+        }
+    });
+
     $("#btn-query").on("click", function() {
         var query = $.trim($("#input-query").val());
 
@@ -25,8 +34,14 @@ $(function(){
             console.log(res);
             var $query = $("#input-query");
             $query.val("");
-            var $buttons = $("#buttons");
-            $buttons.empty();
+
+
+            var $result = $("#result");
+            var $message = $("<div class='message ui piled yellow segment'></div>");
+            if(res.message.photo){
+                $message.append("<image src='"+res.message.photo.url+"'/>");
+            }
+            $message.append("<pre style='color: black'>"+res.message.text+"</pre>");
 
             var keyboardType = res.keyboard.type;
 
@@ -35,19 +50,15 @@ $(function(){
                     break;
                 case "buttons":
                     var buttons = res.keyboard.buttons;
+                    var $buttons = $("<div class=''></div>");
                     $.each(buttons, function(i, item){
                         // console.log(i, item);
-                        $buttons.append("<button class='btn-select-query' value='"+item+"'>"+item+"</button>");
+                        $buttons.append("<button class='ui mini blue button btn-select-query' value='"+item+"'>"+item+"</button>");
                     });
+                    $message.append($buttons);
                     break;
             }
 
-            var $result = $("#result");
-            var $message = $("<div class='message'></div>");
-            if(res.message.photo){
-                $message.append("<image src='"+res.message.photo.url+"'/>");
-            }
-            $message.append("<pre>"+res.message.text+"</pre>");
 
             console.log($message);
 
@@ -55,4 +66,12 @@ $(function(){
 
         });
     });
+
+    $("#result").on("click", ".btn-select-query", function(){
+        var $this = $(this);
+        var query = $this.val();
+        $("#input-query").val(query);
+        $("#btn-query").trigger("click");
+    });
+
 });
