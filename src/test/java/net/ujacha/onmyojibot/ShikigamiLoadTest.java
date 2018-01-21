@@ -3,6 +3,8 @@ package net.ujacha.onmyojibot;
 import java.io.File;
 import java.util.List;
 
+import net.ujacha.onmyojibot.entity.SecretLetter;
+import net.ujacha.onmyojibot.repository.SecretLetterRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,20 +28,28 @@ public class ShikigamiLoadTest {
 	private Loader loader;
 	
 	@Autowired
-	private ShikigamiRepository shikigamiRepository;  
-	
+	private ShikigamiRepository shikigamiRepository;
+
+	@Autowired
+	private SecretLetterRepository secretLetterRepository;
+
+
 	@Test
 	public void test() {
 
-		File file = new File(getClass().getClassLoader().getResource("onmyoji.xlsx").getFile());
+//		File file = new File(getClass().getClassLoader().getResource("onmyoji.xlsx").getFile());
+
+
+//		List<Shikigami> list =  loader.loadShikigami(file);
 		
-		List<Shikigami> list =  loader.loadShikigami(file);
-		
-		list.forEach(s -> {
-			log.debug("{}", s);
-			shikigamiRepository.save(s);
-		});
-		
+//		list.forEach(s -> {
+//			log.debug("{}", s);
+//			shikigamiRepository.save(s);
+//		});
+
+
+//		loader.init();
+
 		List<Shikigami> findHint = shikigamiRepository.findByHint("관");
 		
 		findHint.forEach(s -> log.debug("FIND:{}", s));
@@ -47,7 +57,11 @@ public class ShikigamiLoadTest {
 		List<Shikigami> findName = shikigamiRepository.findByName("맹파");
 		
 		findName.forEach(s -> log.debug("FIND:{}", s));
-		
+
+		List<SecretLetter> findLetters = secretLetterRepository.findByKeyword("부활");
+
+		findLetters.forEach(sl -> log.debug("LETTER : {}", sl));
+
 		
 	}
 	
