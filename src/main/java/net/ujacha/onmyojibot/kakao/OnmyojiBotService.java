@@ -127,7 +127,7 @@ public class OnmyojiBotService {
     public String buildSecretLetterMessage(List<SecretLetter> secretLetters){
         StringBuffer sb = new StringBuffer();
 
-        sb.append("봉마의 밀서를 찾았나요??.\n\n");
+        sb.append("봉마의 밀서를 찾았나요??\n\n");
 
         secretLetters.forEach(s -> {
             sb.append("Q. ").append(s.getQuestion()).append("\n")
