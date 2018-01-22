@@ -19,9 +19,23 @@ public class OnmyojiBotService {
 
     public static final String START_TEXT = "시작";
 
-    private static final String WELCOME_MESSAGE = "찾는 식신의 이름을 입력하세요.\n" + ">  황도깨비\n" + "\n" + "초성으로 찾아볼까요?\n"
-            + ">  ㅎㄷㄲㅂ\n" + "\n" + "신비 요괴 힌트를 입력하세요.\n" + "(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" + ">  허수아비\n" + ">  명계\n"
-            + "\n" + "즐거운 게임생활 되세요!";
+    private static final String WELCOME_MESSAGE =
+                    "찾는 식신의 이름을 입력하세요.\n" +
+                    ">  황도깨비\n" +
+                    "\n" +
+                    "초성으로 찾아볼까요?\n" +
+                    ">  ㅎㄷㄲㅂ\n" +
+                    "\n" +
+                    "신비 요괴 힌트를 입력하세요.\n" +
+                    "(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" +
+                    ">  허수아비\n" +
+                    ">  명계\n" +
+                    "\n" +
+                    "봉마의 밀서 답이 궁금하다구요???\n" +
+                    "문제에 나오는 단어로 검색해보세요!!\n" +
+                    ">  " +
+                    "\n" +
+                    "즐거운 게임생활 되세요!";
 
 
     @Autowired
@@ -96,7 +110,11 @@ public class OnmyojiBotService {
         }
 
         if(secretLetters != null && secretLetters.size() > 0){
-            text = text + "\n\n" + buildSecretLetterMessage(secretLetters);
+            if(StringUtils.isEmpty(text)){
+                text = buildSecretLetterMessage(secretLetters);
+            }else{
+                text = text + "\n\n========================\n\n" + buildSecretLetterMessage(secretLetters);
+            }
         }
 
         if(StringUtils.isEmpty(text)) {

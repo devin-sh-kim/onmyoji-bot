@@ -77,12 +77,16 @@ public class KakaoChatBotController {
 			// 밀서 검색
 			List<SecretLetter> secretLetters = onmyojiBotService.findSecretLetters(requestBody.getContent());
 
-			log.debug("{}", secretLetters);
 
 			message = onmyojiBotService.buildMessage(shikigamis, secretLetters);
 			messageResponse.setKeyboard(onmyojiBotService.buildKeyboardByShikigamis(shikigamis));
 
 			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), shikigamis != null ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
+			if(secretLetters != null && secretLetters.size() > 0){
+				secretLetters.forEach(s -> {
+					log.debug("USERKEY:{}\tQUERY:{}\tSECRET:{}", requestBody.getUserKey(), requestBody.getContent(), secretLetters != null ? s.getQuestion() + ":" + s.getAnswer() : "Not Found");
+				});
+			}
 		}
 
 		messageResponse.setMessage(message);
