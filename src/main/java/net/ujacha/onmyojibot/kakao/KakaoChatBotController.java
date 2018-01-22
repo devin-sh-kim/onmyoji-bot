@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.ujacha.onmyojibot.entity.SecretLetter;
+import net.ujacha.onmyojibot.repository.SecretLetterRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +28,10 @@ import net.ujacha.onmyojibot.repository.ShikigamiRepository;
 public class KakaoChatBotController {
 
 	@Autowired
-	private ShikigamiRepository shikigamiRepository;
+	private OnmyojiBotService onmyojiBotService;
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
-	private static final String WELCOME_MESSAGE = "찾는 식신의 이름을 입력하세요.\n" + ">  황도깨비\n" + "\n" + "초성으로 찾아볼까요?\n"
-			+ ">  ㅎㄷㄲㅂ\n" + "\n" + "신비 요괴 힌트를 입력하세요.\n" + "(힌트는 하나씩만 입력해 주세요/힌트 초성은 아직...)\n" + ">  허수아비\n" + ">  명계\n"
-			+ "\n" + "즐거운 게임생활 되세요!";
 
 	// Home Keyboard API
 	// curl -XGET 'https://:your_server_url/keyboard'
@@ -43,7 +42,7 @@ public class KakaoChatBotController {
 		// keyboard.setType("text");
 
 		keyboard.setType("buttons");
-		keyboard.setButtons(new String[] { "식신찾기" });
+		keyboard.setButtons(new String[] { OnmyojiBotService.START_TEXT });
 
 		return keyboard;
 	}
@@ -67,130 +66,33 @@ public class KakaoChatBotController {
 		KakaoMessageResponse messageResponse = new KakaoMessageResponse();
 		Message message = null;
 
-		if (StringUtils.equals("식신찾기", requestBody.getContent())) {
-			message = buildFindInfo();
+		if (StringUtils.equals(OnmyojiBotService.START_TEXT, requestBody.getContent())) {
+			message = onmyojiBotService.buildFindInfo();
+		} else if (StringUtils.equals("다시검색", requestBody.getContent())) {
+			message = onmyojiBotService.buildFindInfo();
 		} else {
-			List<Shikigami> shikigamis = findShikigamis(requestBody.getContent());
-			
-			message = buildMessage(shikigamis);
-			messageResponse.setKeyboard(buildKeyboard(shikigamis));
+			// 식신 검색
+			List<Shikigami> shikigamis = onmyojiBotService.findShikigamis(requestBody.getContent());
 
-			
+			// 밀서 검색
+			List<SecretLetter> secretLetters = onmyojiBotService.findSecretLetters(requestBody.getContent());
+
+			log.debug("{}", secretLetters);
+
+			message = onmyojiBotService.buildMessage(shikigamis, secretLetters);
+			messageResponse.setKeyboard(onmyojiBotService.buildKeyboardByShikigamis(shikigamis));
+
 			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), shikigamis != null ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
 		}
 
 		messageResponse.setMessage(message);
 
-
-		
-		
 		return messageResponse;
 	}
 
-	private Keyboard buildKeyboard(List<Shikigami> shikigamis) {
 
-		Keyboard keyboard = new Keyboard();
-		keyboard.setType("text");
 
-		if (shikigamis != null) {
-			if (shikigamis.size() > 1) {
-				keyboard.setType("buttons");
 
-				String[] buttons = shikigamis.stream().map(s -> s.getName()).toArray(String[]::new);
-
-				keyboard.setButtons(buttons);
-			}
-		}
-
-		return keyboard;
-	}
-
-	private Message buildFindInfo() {
-
-		Message message = new Message();
-
-		message.setText(WELCOME_MESSAGE);
-
-		return message;
-	}
-
-	private Message buildMessage(List<Shikigami> shikigamis) {
-		Message message = new Message();
-
-		if (shikigamis != null) {
-
-			// if (StringUtils.isNotEmpty(shikigami.getInfoPageUrl())) {
-			// MessageButton messageButton = new MessageButton();
-			// messageButton.setLabel("정보 보기");
-			// messageButton.setUrl(shikigami.getInfoPageUrl());
-			// message.setMessageButton(messageButton);
-			// }
-
-			String text = "";
-			if (shikigamis.size() > 1) {
-
-				text = buildSelectShikigamiMassage(shikigamis);
-				message.setText(text);
-
-			} else if (shikigamis.size() == 1) {
-
-				Shikigami shikigami = shikigamis.get(0);
-
-				text = buildShikigamiMessageText(shikigami);
-				message.setText(text);
-
-				if (StringUtils.isNotEmpty(shikigami.getImageUrl())) {
-					Photo photo = new Photo();
-					photo.setUrl(shikigami.getImageUrl());
-					photo.setHeight(150);
-					photo.setWidth(150);
-					message.setPhoto(photo);
-				}
-
-			}
-
-		} else {
-			// 없음
-			message.setText("찾는 식신이 없습니다.\n다시 한번 확인해주세요.\n힌트는 하나만 적어주세요.");
-		}
-
-		return message;
-	}
-
-	private String buildSelectShikigamiMassage(List<Shikigami> shikigamis) {
-
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("다음 식신을 찾았습니다.\n\n");
-
-		shikigamis.forEach(s -> {
-			sb.append("- ").append(s.getName()).append("\n");
-		});
-
-		sb.append("\n찾고있는 식신을 선택하세요.");
-
-		return sb.toString();
-	}
-
-	private List<Shikigami> findShikigamis(String content) {
-
-		String text = content.trim();
-
-		List<Shikigami> find = shikigamiRepository.findByHint(text);
-
-		find.addAll(shikigamiRepository.findByName(text));
-
-		find.addAll(shikigamiRepository.findByInitialName(text));
-
-		HashSet<Shikigami> hashSet = new HashSet<>(find);
-
-		find = new ArrayList<>(hashSet);
-
-		if (find != null && find.size() > 0) {
-			return find;
-		}
-		return null;
-	}
 
 	// 친구 추가/차단 알림 API
 	// curl -XPOST 'https://:your_server_url/friend' -d '{"user_key" :
@@ -213,70 +115,4 @@ public class KakaoChatBotController {
 
 	}
 
-	private String buildShikigamiMessageText(Shikigami shikigami) {
-		StringBuffer sb = new StringBuffer();
-
-		Location[] locations = shikigami.getLocations();
-
-		int max = 0;
-		Location recommend = null;
-		for (Location l : locations) {
-
-			if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
-					&& Integer.parseInt(l.getValue()) > 99) {
-				continue;
-			}
-
-			if (l.getCount() > max) {
-				max = l.getCount();
-				recommend = l;
-			}
-
-		}
-
-		sb.append("찾은 식신: [").append(shikigami.getName()).append("]\n\n");
-		if (recommend != null) {
-			sb.append("추천 위치:\n");
-			sb.append(buildLocation(recommend)).append("\n");
-		}
-
-		
-		boolean apply = false;
-		StringBuilder locationContent = new StringBuilder();
-		for (Location l : locations) {
-			if(l.getCount() > 0) {
-				apply = true;
-				locationContent.append(buildLocation(l));				
-			}
-		}
-		
-		if(apply) {
-			sb.append("출현 위치:\n").append(locationContent.toString());			
-		}else {
-			sb.append("어디서 많이 본거 같은데....");
-		}
-
-		return sb.toString().trim();
-	}
-
-	private String buildLocation(Location l) {
-		StringBuffer sb = new StringBuffer();
-
-		sb.append("- ");
-
-		sb.append(l.getType()).append(" ");
-		if (StringUtils.equals("탐험", l.getType())) {
-			sb.append("챕터-").append(l.getValue());
-		} else if (StringUtils.equals("어혼던전", l.getType())) {
-			sb.append(l.getValue()).append("층");
-		} else if (StringUtils.equals("요기봉인", l.getType())) {
-			sb.append(l.getValue());
-		} else if (StringUtils.equals("비밀던전", l.getType())) {
-			sb.append(l.getValue());
-		}
-
-		sb.append(" (").append(l.getCount()).append("마리)").append("\n");
-
-		return sb.toString();
-	}
 }

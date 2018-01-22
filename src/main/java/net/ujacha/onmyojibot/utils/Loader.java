@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import net.ujacha.onmyojibot.entity.SecretLetter;
+import net.ujacha.onmyojibot.repository.SecretLetterRepository;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,9 +30,11 @@ public class Loader {
 	private static final String FILE_NAME = "onmyoji.xlsx";
 	
 	@Autowired
-	private ShikigamiRepository shikigamiRepository; 
+	private ShikigamiRepository shikigamiRepository;
 
-	
+	@Autowired
+	private SecretLetterRepository secretLetterRepository;
+
 	public void init() {
 		
 		File file = new File(getClass().getClassLoader().getResource(FILE_NAME).getFile());
@@ -39,9 +43,77 @@ public class Loader {
 		
 		list.forEach(s -> shikigamiRepository.save(s));
 
+		List<SecretLetter> secretLetters = loadSecretLetter(file);
+
+		secretLetters.forEach(sl -> secretLetterRepository.save(sl));
+
 	}
 	
-	
+	public List<SecretLetter> loadSecretLetter(File file){
+
+		List<SecretLetter> list = new ArrayList<>();
+
+		try {
+			if(file == null) {
+				file = new File(FILE_NAME);
+			}
+
+			FileInputStream excelFile = new FileInputStream(file);
+
+			Workbook workbook = new XSSFWorkbook(excelFile);
+			Sheet datatypeSheet = workbook.getSheetAt(5);
+			Iterator<Row> rowIterator = datatypeSheet.iterator();
+
+			while (rowIterator.hasNext()) {
+
+
+				Row currentRow = rowIterator.next();
+
+				Iterator<Cell> cellIterator = currentRow.iterator();
+
+				if (currentRow.getCell(0) != null && currentRow.getCell(1) != null) {
+
+					Cell cellQ = currentRow.getCell(0);
+					String q = cellQ.getStringCellValue();
+
+					Cell cellA = currentRow.getCell(1);
+					String a = null;
+					switch (cellA.getCellTypeEnum()){
+						case STRING:
+							a = cellA.getStringCellValue();
+							break;
+						case NUMERIC:
+							a = String.valueOf((int) cellA.getNumericCellValue());
+							break;
+						default:
+							a = "";
+							break;
+					}
+
+					SecretLetter secretLetter = new SecretLetter();
+
+					secretLetter.setQuestion(q);
+					secretLetter.setAnswer(a);
+
+					log.debug("SECRET LETTER : {}",secretLetter);
+					list.add(secretLetter);
+				}
+
+			}
+
+			workbook.close();
+
+		} catch (Exception e) {
+			log.error("{}", e.getMessage(), e);
+			e.printStackTrace();
+		}
+
+		log.debug("SIZE:{}", list.size());
+
+		return list;
+	}
+
+
 	public List<Shikigami> loadShikigami(File file) {
 		List<Shikigami> list = new ArrayList<>();
 
