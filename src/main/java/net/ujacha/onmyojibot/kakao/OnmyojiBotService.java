@@ -53,7 +53,7 @@ public class OnmyojiBotService {
             if (shikigamis.size() > 1) {
                 keyboard.setType("buttons");
 
-                List<String> buttons = shikigamis.stream().map(s -> s.getName()).collect(Collectors.toList());
+                List<String> buttons = shikigamis.stream().map(Shikigami::getName).collect(Collectors.toList());
                 buttons.add("다시검색");
 
                 keyboard.setButtons(buttons.toArray(new String[]{}));
@@ -127,30 +127,26 @@ public class OnmyojiBotService {
         return message;
     }
 
-    public String buildSelectShikigamiMassage(List<Shikigami> shikigamis) {
+    private String buildSelectShikigamiMassage(List<Shikigami> shikigamis) {
 
         StringBuffer sb = new StringBuffer();
 
         sb.append("다음 식신을 찾았습니다.\n\n");
 
-        shikigamis.forEach(s -> {
-            sb.append("- ").append(s.getName()).append("\n");
-        });
+        shikigamis.forEach(s -> sb.append("- ").append(s.getName()).append("\n"));
 
         sb.append("\n찾고있는 식신을 선택하세요.");
 
         return sb.toString();
     }
 
-    public String buildSecretLetterMessage(List<SecretLetter> secretLetters){
+    private String buildSecretLetterMessage(List<SecretLetter> secretLetters){
         StringBuffer sb = new StringBuffer();
 
         sb.append("봉마의 밀서를 찾았나요??\n\n");
 
-        secretLetters.forEach(s -> {
-            sb.append("Q. ").append(s.getQuestion()).append("\n")
-                    .append("A. ").append(s.getAnswer()).append("\n\n");
-        });
+        secretLetters.forEach(s -> sb.append("Q. ").append(s.getQuestion()).append("\n")
+                .append("A. ").append(s.getAnswer()).append("\n\n"));
 
         return sb.toString();
     }
@@ -173,7 +169,7 @@ public class OnmyojiBotService {
 
         find = new ArrayList<>(hashSet);
 
-        if (find != null && find.size() > 0) {
+        if (find.size() > 0) {
             return find;
         }
         return null;
@@ -191,7 +187,7 @@ public class OnmyojiBotService {
         return null;
     }
 
-    public String buildShikigamiMessageText(Shikigami shikigami) {
+    private String buildShikigamiMessageText(Shikigami shikigami) {
         StringBuffer sb = new StringBuffer();
 
         Location[] locations = shikigami.getLocations();
@@ -237,7 +233,7 @@ public class OnmyojiBotService {
         return sb.toString().trim();
     }
 
-    public String buildLocation(Location l) {
+    private String buildLocation(Location l) {
         StringBuffer sb = new StringBuffer();
 
         sb.append("- ");
