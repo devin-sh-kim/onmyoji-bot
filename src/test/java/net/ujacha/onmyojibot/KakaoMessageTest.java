@@ -34,14 +34,14 @@ public class KakaoMessageTest {
 		KakaoRequestBody kakaoRequestBody = new KakaoRequestBody();
 		kakaoRequestBody.setUserKey("TESTUSER");
 		kakaoRequestBody.setType("text");
-		kakaoRequestBody.setContent("백");
+		kakaoRequestBody.setContent("꽃조개");
 		
 		
-		this.mockMvc.perform(get("/kakao/keyboard")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("식신찾기")));
+		this.mockMvc.perform(get("/kakao/keyboard")).andDo(print()).andExpect(status().isOk()).andExpect(content().string(containsString("시작")));
 		this.mockMvc.perform(post("/kakao/message").content(new ObjectMapper().writeValueAsString(kakaoRequestBody)).contentType(MediaType.APPLICATION_JSON_UTF8))
 					.andDo(print())
 					.andExpect(status().isOk())
-					.andExpect(content().string(containsString("백무상")));
+					.andExpect(content().string(containsString("꽃조개")));
 					
 	}
 	
