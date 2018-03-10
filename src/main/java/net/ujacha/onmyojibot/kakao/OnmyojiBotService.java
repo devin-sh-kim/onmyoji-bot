@@ -247,6 +247,8 @@ public class OnmyojiBotService {
             sb.append(l.getValue());
         } else if (StringUtils.equals("비밀던전", l.getType())) {
             sb.append(l.getValue());
+        } else {
+            sb.append(l.getValue());
         }
 
         sb.append(" (").append(l.getCount()).append("마리)").append("\n");
