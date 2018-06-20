@@ -1,11 +1,15 @@
 package net.ujacha.onmyojibot.kakao;
 
+import net.ujacha.onmyojibot.controller.ShikigamiController;
 import net.ujacha.onmyojibot.entity.Location;
 import net.ujacha.onmyojibot.entity.SecretLetter;
 import net.ujacha.onmyojibot.entity.Shikigami;
 import net.ujacha.onmyojibot.repository.SecretLetterRepository;
 import net.ujacha.onmyojibot.repository.ShikigamiRepository;
+import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +20,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class OnmyojiBotService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OnmyojiBotService.class);
 
     public static final String START_TEXT = "시작";
 
@@ -37,6 +43,13 @@ public class OnmyojiBotService {
                     "\n" +
                     "즐거운 게임생활 되세요!";
 
+    public static final String CREW_BUTTON_TEXT = "음양료 추천";
+
+    private static final String CREW_MESSAGE =
+                    "길 잃은 음양사여,\n\n" +
+                    "지금 음양료를 찾고 계신가요???\n\n" +
+                    "음양료 [화홍]에서 당신을 기다리고 있습니다!!\n" +
+                    "음양료 [화홍]으로 오셔서 즐거운 게임생활 즐기세요~\n";
 
     @Autowired
     private ShikigamiRepository shikigamiRepository;
@@ -54,6 +67,11 @@ public class OnmyojiBotService {
                 keyboard.setType("buttons");
 
                 List<String> buttons = shikigamis.stream().map(Shikigami::getName).collect(Collectors.toList());
+
+                if(randomInsertCrewButton()){
+                    buttons.add(CREW_BUTTON_TEXT);
+                }
+
                 buttons.add("다시검색");
 
                 keyboard.setButtons(buttons.toArray(new String[]{}));
@@ -256,4 +274,25 @@ public class OnmyojiBotService {
         return sb.toString();
     }
 
+    private boolean randomInsertCrewButton(){
+
+        boolean b = false;
+        int i = RandomUtils.nextInt();
+
+        if ((i % 4) == 0){
+            b = true;
+        }
+
+        LOGGER.debug("{} {} {}", i, i % 7, b);
+
+        return b;
+    }
+
+    public Message buildCrewInfo() {
+        Message message = new Message();
+
+        message.setText(CREW_MESSAGE);
+
+        return message;
+    }
 }

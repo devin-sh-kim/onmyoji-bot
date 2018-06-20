@@ -57,20 +57,24 @@ function sendQuery(){
         }
         $message.append("<pre style='color: black'>"+res.message.text+"</pre>");
 
-        var keyboardType = res.keyboard.type;
+        if(res.keyboard){
 
-        switch (keyboardType) {
-            case "text":
-                break;
-            case "buttons":
-                var buttons = res.keyboard.buttons;
-                var $buttons = $("<div class=''></div>");
-                $.each(buttons, function(i, item){
-                    // console.log(i, item);
-                    $buttons.append("<button class='ui mini blue button btn-select-query' value='"+item+"'>"+item+"</button>");
-                });
-                $message.append($buttons);
-                break;
+            var keyboardType = res.keyboard.type;
+
+            switch (keyboardType) {
+                case "text":
+                    break;
+                case "buttons":
+                    var buttons = res.keyboard.buttons;
+                    var $buttons = $("<div class=''></div>");
+                    $.each(buttons, function(i, item){
+                        // console.log(i, item);
+                        $buttons.append("<button class='ui mini blue button btn-select-query' value='"+item+"'>"+item+"</button>");
+                    });
+                    $message.append($buttons);
+                    break;
+            }
+
         }
 
 

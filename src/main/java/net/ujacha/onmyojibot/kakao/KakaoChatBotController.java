@@ -64,12 +64,14 @@ public class KakaoChatBotController {
 //		log.debug("USERKEY:{} TYPE:{} CONTENT:{}", requestBody.getUserKey(), requestBody.getType(), requestBody.getContent());
 		
 		KakaoMessageResponse messageResponse = new KakaoMessageResponse();
-		Message message = null;
+		Message message;
 
 		if (StringUtils.equals(OnmyojiBotService.START_TEXT, requestBody.getContent())) {
 			message = onmyojiBotService.buildFindInfo();
 		} else if (StringUtils.equals("다시검색", requestBody.getContent())) {
 			message = onmyojiBotService.buildFindInfo();
+		} else if (StringUtils.equals(OnmyojiBotService.CREW_BUTTON_TEXT, requestBody.getContent())) {
+			message = onmyojiBotService.buildCrewInfo();
 		} else {
 			// 식신 검색
 			List<Shikigami> shikigamis = onmyojiBotService.findShikigamis(requestBody.getContent());
