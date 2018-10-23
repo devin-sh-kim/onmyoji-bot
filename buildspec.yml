@@ -10,4 +10,5 @@ phases:
       - ./gradlew build -x test
 artifacts:
   files:
-     -build/libs/*.war
+     - build/libs/*.war
+     - onmyoji-bot
