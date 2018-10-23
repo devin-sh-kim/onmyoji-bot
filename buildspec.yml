@@ -8,6 +8,3 @@ phases:
     commands:
       - echo Build started on `date`
       - ./gradlew build -x test
-artifacts:
-  files:
-    - build/libs/onmyoji-bot-0.0.1-SNAPSHOT.war
