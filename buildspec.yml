@@ -8,3 +8,6 @@ phases:
     commands:
       - echo Build started on `date`
       - ./gradlew build -x test
+artifacts:
+  files:
+     -build/libs/*.war
