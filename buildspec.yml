@@ -4,7 +4,7 @@ phases:
   build:
     commands:
       - echo Build started on `date`
-      - gradlew build -x test
+      - ./gradlew build -x test
 artifacts:
   files:
     - build/*.war
