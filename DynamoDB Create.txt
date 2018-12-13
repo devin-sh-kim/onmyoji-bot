@@ -1,0 +1,11 @@
+aws dynamodb create-table \
+    --table-name OMJ_LOG_NOT_FOUND \
+    --attribute-definitions \
+        AttributeName=userKey,AttributeType=S \
+        AttributeName=createAt,AttributeType=S \
+    --key-schema \
+        AttributeName=userKey,KeyType=HASH \
+        AttributeName=createAt,KeyType=RANGE \
+    --provisioned-throughput \
+        ReadCapacityUnits=5,WriteCapacityUnits=5 \
+    --endpoint-url http://localhost:8000
