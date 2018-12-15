@@ -1,0 +1,14 @@
+###
+GET http://localhost:8080/kakao/keyboard
+
+###
+POST http://localhost:8080/kakao/message
+Content-Type: application/json
+
+{
+"user_key": "xxxx1111",
+"type": "text",
+"content": "안녕하세요"
+}
+
+###

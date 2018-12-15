@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import net.ujacha.onmyojibot.entity.SecretLetter;
+import net.ujacha.onmyojibot.log.LogService;
 import net.ujacha.onmyojibot.repository.SecretLetterRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ public class KakaoChatBotController {
 
 	@Autowired
 	private OnmyojiBotService onmyojiBotService;
+
+	@Autowired
+	private LogService logService;
 
 	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
@@ -79,15 +83,28 @@ public class KakaoChatBotController {
 			// 밀서 검색
 			List<SecretLetter> secretLetters = onmyojiBotService.findSecretLetters(requestBody.getContent());
 
-
 			message = onmyojiBotService.buildMessage(shikigamis, secretLetters);
 			messageResponse.setKeyboard(onmyojiBotService.buildKeyboardByShikigamis(shikigamis));
 
-			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), shikigamis != null ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
+			boolean isFound = false;
+			if (shikigamis != null){
+				isFound = true;
+			}
+
+			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), isFound ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
+
+			if(secretLetters != null){
+				isFound = true;
+			}
+
 			if(secretLetters != null && secretLetters.size() > 0){
 				secretLetters.forEach(s -> {
 					log.debug("USERKEY:{}\tQUERY:{}\tSECRET:{}", requestBody.getUserKey(), requestBody.getContent(), secretLetters != null ? s.getQuestion() + ":" + s.getAnswer() : "Not Found");
 				});
+			}
+
+			if(!isFound){
+				logService.logNotFound(requestBody.getUserKey(), requestBody.getContent());
 			}
 		}
 
