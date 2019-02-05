@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import net.ujacha.onmyojibot.entity.SecretLetter;
 import net.ujacha.onmyojibot.log.LogService;
 import net.ujacha.onmyojibot.repository.SecretLetterRepository;
@@ -26,6 +27,7 @@ import net.ujacha.onmyojibot.repository.ShikigamiRepository;
 
 @RestController
 @RequestMapping("kakao")
+@Slf4j
 public class KakaoChatBotController {
 
 	@Autowired
@@ -34,7 +36,7 @@ public class KakaoChatBotController {
 	@Autowired
 	private LogService logService;
 
-	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
+//	private static final Logger log = LoggerFactory.getLogger(KakaoChatBotController.class);
 
 
 	// Home Keyboard API
@@ -91,7 +93,7 @@ public class KakaoChatBotController {
 				isFound = true;
 			}
 
-			log.debug("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), isFound ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
+			log.trace("USERKEY:{}\tQUERY:{}\tFIND:{}", requestBody.getUserKey(), requestBody.getContent(), isFound ? shikigamis.stream().map(s -> s.getName()).collect(Collectors.joining(", ")) : "Not Found");
 
 			if(secretLetters != null){
 				isFound = true;
@@ -99,7 +101,7 @@ public class KakaoChatBotController {
 
 			if(secretLetters != null && secretLetters.size() > 0){
 				secretLetters.forEach(s -> {
-					log.debug("USERKEY:{}\tQUERY:{}\tSECRET:{}", requestBody.getUserKey(), requestBody.getContent(), secretLetters != null ? s.getQuestion() + ":" + s.getAnswer() : "Not Found");
+					log.trace("USERKEY:{}\tQUERY:{}\tSECRET:{}", requestBody.getUserKey(), requestBody.getContent(), secretLetters != null ? s.getQuestion() + ":" + s.getAnswer() : "Not Found");
 				});
 			}
 

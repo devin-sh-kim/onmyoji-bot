@@ -1,5 +1,6 @@
 package net.ujacha.onmyojibot.kakao;
 
+import lombok.extern.slf4j.Slf4j;
 import net.ujacha.onmyojibot.controller.ShikigamiController;
 import net.ujacha.onmyojibot.entity.Location;
 import net.ujacha.onmyojibot.entity.SecretLetter;
@@ -17,16 +18,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
+@Slf4j
 public class OnmyojiBotService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(OnmyojiBotService.class);
 
     public static final String START_TEXT = "시작";
 
     private static final String WELCOME_MESSAGE =
-                    "찾는 식신의 이름을 입력하세요.\n" +
+            "찾는 식신의 이름을 입력하세요.\n" +
                     ">  황도깨비\n" +
                     "\n" +
                     "초성으로 찾아볼까요?\n" +
@@ -46,7 +47,7 @@ public class OnmyojiBotService {
     public static final String CREW_BUTTON_TEXT = "음양료 추천";
 
     private static final String CREW_MESSAGE =
-                    "길 잃은 음양사여,\n\n" +
+            "길 잃은 음양사여,\n\n" +
                     "지금 음양료를 찾고 계신가요???\n\n" +
                     "음양료 [화홍]에서 당신을 기다리고 있습니다!!\n" +
                     "음양료 [화홍]으로 오셔서 즐거운 게임생활 즐기세요~\n";
@@ -68,7 +69,7 @@ public class OnmyojiBotService {
 
                 List<String> buttons = shikigamis.stream().map(Shikigami::getName).collect(Collectors.toList());
 
-                if(randomInsertCrewButton()){
+                if (randomInsertCrewButton()) {
                     buttons.add(CREW_BUTTON_TEXT);
                 }
 
@@ -127,15 +128,15 @@ public class OnmyojiBotService {
 
         }
 
-        if(secretLetters != null && secretLetters.size() > 0){
-            if(StringUtils.isEmpty(text)){
+        if (secretLetters != null && secretLetters.size() > 0) {
+            if (StringUtils.isEmpty(text)) {
                 text = buildSecretLetterMessage(secretLetters);
-            }else{
+            } else {
                 text = text + "\n\n========================\n\n" + buildSecretLetterMessage(secretLetters);
             }
         }
 
-        if(StringUtils.isEmpty(text)) {
+        if (StringUtils.isEmpty(text)) {
             // 없음
             text = "찾는 식신이 없습니다.\n다시 한번 확인해주세요.\n힌트는 하나만 적어주세요.";
         }
@@ -158,7 +159,7 @@ public class OnmyojiBotService {
         return sb.toString();
     }
 
-    private String buildSecretLetterMessage(List<SecretLetter> secretLetters){
+    private String buildSecretLetterMessage(List<SecretLetter> secretLetters) {
         StringBuffer sb = new StringBuffer();
 
         sb.append("봉마의 밀서를 찾았나요??\n\n");
@@ -193,7 +194,7 @@ public class OnmyojiBotService {
         return null;
     }
 
-    public List<SecretLetter> findSecretLetters(String content){
+    public List<SecretLetter> findSecretLetters(String content) {
 
         String text = content.trim();
 
@@ -212,6 +213,8 @@ public class OnmyojiBotService {
 
         int max = 0;
         Location recommend = null;
+        Location message = Stream.of(locations).filter(l -> StringUtils.equals("메시지", l.getType())).findFirst().orElse(null);
+
         for (Location l : locations) {
 
             if (StringUtils.equals("탐험", l.getType()) && StringUtils.isNumeric(l.getValue())
@@ -232,26 +235,34 @@ public class OnmyojiBotService {
             sb.append(buildLocation(recommend)).append("\n");
         }
 
-
         boolean apply = false;
         StringBuilder locationContent = new StringBuilder();
         for (Location l : locations) {
-            if(l.getCount() > 0) {
+            if (l.getCount() > 0) {
                 apply = true;
                 locationContent.append(buildLocation(l));
             }
         }
 
-        if(apply) {
+        if (apply) {
             sb.append("출현 위치:\n").append(locationContent.toString());
-        }else {
-            sb.append("어디서 많이 본거 같은데....");
+        } else {
+            if(message == null){
+                sb.append("어디서 많이 본거 같은데....\n");
+            }
         }
+
+        if (message != null) {
+            sb.append("========================\n\n");
+            sb.append(message.getValue()).append("\n");
+        }
+
 
         return sb.toString().trim();
     }
 
     private String buildLocation(Location l) {
+        log.debug("LOCATION: {}", l);
         StringBuffer sb = new StringBuffer();
 
         sb.append("- ");
@@ -274,16 +285,16 @@ public class OnmyojiBotService {
         return sb.toString();
     }
 
-    private boolean randomInsertCrewButton(){
+    private boolean randomInsertCrewButton() {
 
         boolean b = false;
         int i = RandomUtils.nextInt();
 
-        if ((i % 4) == 0){
+        if ((i % 4) == 0) {
             b = true;
         }
 
-        LOGGER.debug("{} {} {}", i, i % 7, b);
+        log.debug("{} {} {}", i, i % 7, b);
 
         return b;
     }
