@@ -16,5 +16,6 @@
 gradle bootRun
 ```
 
+--spring.profiles.active=log-dynamoDB
 
 # TODO
