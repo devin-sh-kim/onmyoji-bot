@@ -3,6 +3,7 @@ package net.ujacha.onmyojibot.repository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -58,5 +59,19 @@ public class ShikigamiRepository {
 		return list;
 	}
 
-	
+
+	public List<Shikigami> findByStage(String keyword) {
+
+		List<Shikigami> list = shikigamis.stream().filter(s -> Stream.of(s.getLocations()).filter(l -> {
+			if(StringUtils.equals(l.getType(), "비밀던전")){
+				if (l.getValue().startsWith(keyword)){
+					return true;
+				}
+			}
+			return false;
+		}).count() == 0 ? false : true).collect(Collectors.toList());
+
+		return list;
+
+	}
 }
