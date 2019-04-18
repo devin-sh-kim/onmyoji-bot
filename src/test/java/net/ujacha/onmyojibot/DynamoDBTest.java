@@ -31,7 +31,7 @@ public class DynamoDBTest {
     @Autowired
     private LogService logService;
 
-    @Test
+//    @Test
     public void test(){
         AmazonDynamoDB client = dynamoDBClientFactory.createClient();
 
