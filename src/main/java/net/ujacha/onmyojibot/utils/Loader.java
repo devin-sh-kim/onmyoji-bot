@@ -116,12 +116,13 @@ public class Loader {
 
 	public List<Shikigami> loadShikigami(File file) {
 		List<Shikigami> list = new ArrayList<>();
+		Long id = 0L;
 
 		try {
 			if(file == null) {
 				file = new File(FILE_NAME);
 			}
-			
+
 			FileInputStream excelFile = new FileInputStream(file);
 
 			Workbook workbook = new XSSFWorkbook(excelFile);
@@ -141,16 +142,17 @@ public class Loader {
 
 				Iterator<Cell> cellIterator = currentRow.iterator();
 
-				
+
 				if (currentRow.getCell(1) != null && currentRow.getCell(1).getCellTypeEnum() != CellType.BLANK) {
 					if(shikigami != null) {
 						Collections.sort(locations);
-						shikigami.setLocations((Location[]) locations.toArray(new Location[locations.size()]));						
+						shikigami.setLocations((Location[]) locations.toArray(new Location[locations.size()]));
 						log.debug("{}", shikigami);
 						list.add(shikigami);
 					}
-					
+
 					shikigami = new Shikigami();
+					shikigami.setId(++id);
 					locations = new ArrayList<>();
 
 					isNewShikigami = true;
@@ -173,18 +175,18 @@ public class Loader {
 					case 3:
 						if(currentCell.getCellTypeEnum() == CellType.NUMERIC) {
 							double d = currentCell.getNumericCellValue();
-							
+
 							location.setValue(String.valueOf((int) d));
 						}else if(currentCell.getCellTypeEnum() == CellType.STRING) {
-							location.setValue(currentCell.getStringCellValue());							
-						} 
+							location.setValue(currentCell.getStringCellValue());
+						}
 						break;
 					case 4:
 						if(currentCell.getCellTypeEnum() == CellType.NUMERIC) {
 							location.setCount((int) currentCell.getNumericCellValue());
 						}
 						break;
-					
+
 					default:
 						break;
 					}
@@ -195,12 +197,12 @@ public class Loader {
 							shikigami.setRarity(currentCell.getStringCellValue());
 							break;
 						case 1:
-							
+
 							String name = currentCell.getStringCellValue();
-							
+
 							shikigami.setName(name);
 							shikigami.setInitialName(KoreanInitialUtils.initialString(name));
-							
+
 							break;
 						case 5: // 힌트
 							String hintString = currentCell.getStringCellValue();

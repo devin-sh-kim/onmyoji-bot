@@ -16,6 +16,10 @@ public class ShikigamiRepository {
 
 	private List<Shikigami> shikigamis = new ArrayList<>();
 
+	public List<Shikigami> getAllShikigami(){
+		return this.shikigamis;
+	}
+
 	public void save(Shikigami s) {
 
 		shikigamis.add(s);

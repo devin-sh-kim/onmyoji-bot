@@ -1,0 +1,14 @@
+package net.ujacha.onmyojibot.model;
+
+import lombok.Builder;
+import lombok.Data;
+
+@Data
+@Builder
+public class LocationShikigami {
+
+    private long locationId;
+    private long shikigamiId;
+    private int count;
+
+}
