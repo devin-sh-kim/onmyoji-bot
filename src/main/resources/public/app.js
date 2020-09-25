@@ -2,9 +2,16 @@ $(function(){
 
     // $('.ui.sticky').sticky();
 
+    $("#input-query").on("keyup", function(event) {
+        var query = $.trim($("#input-query").val());
+        console.log(query);
+        $("#btn-query").attr("data-action-id", query);
+    });
+
     $("#input-query").on("keypress", function(event){
         if(event.keyCode == 13){
-            sendQuery();
+            //sendQuery();
+            $("#btn-query").trigger("click");
             event.preventDefault();
         }
     });

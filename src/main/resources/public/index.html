@@ -46,7 +46,7 @@
         </h3>
         <div class="ui fluid action input">
             <input type="text" id="input-query" placeholder="식신 또는 힌트를 입력하세요">
-            <button class="ui orange button" id="btn-query" type="button">검색</button>
+            <button class="ui orange button track" id="btn-query" type="button" data-action-id="SEND-BTN">검색</button>
         </div>
     </div>
     <div id="result" style=""></div>
@@ -62,8 +62,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"
         integrity="sha256-IDf1DTXCXREKhmsRkKy9Xa4J1A99tyDSCC+8B042LJo=" crossorigin="anonymous"></script>
 <script src="app.js"></script>
+<script src="https://track.ujacha.net/js/track.min.js" type="application/javascript"></script>
 <script>
-
+    $(function() {
+        // document ready
+        var track = new Track({
+            host: "https://track.ujacha.net",
+            actionClass: "track",
+            actionEvents: ["click"],
+            sid: "ONMYOJI-BOT", // 사이트 아이디
+            extra: {
+            }
+        });
+    });
 </script>
 </body>
 </html>
